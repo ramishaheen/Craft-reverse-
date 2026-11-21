@@ -301,15 +301,21 @@ fn find_cli() -> Option<PathBuf> {
             if is_executable(&sib) {
                 return Some(sib);
             }
-            // test binaries live in target/<profile>/deps; the CLI is one level up
-            if let Some(up) = dir.parent().map(|d| d.join(&name))
-                && is_executable(&up)
-            {
+            if let Some(up) = cargo_profile_dirs(dir).map(|d| d.join(&name)).find(|p| is_executable(p)) {
                 return Some(up);
             }
         }
     }
     which("craft-anything-cli")
+}
+
+/// Where Cargo put the CLI when this executable is a test binary in `dir`: target/<profile>.
+/// Test binaries live in target/<profile>/deps, the CLI one level up; with Cargo's newer
+/// build-dir layout (the default from Rust 1.100) they live in
+/// target/<profile>/build/<package>/<hash>/out, and the CLI is four levels up.
+fn cargo_profile_dirs(dir: &Path) -> impl Iterator<Item = &Path> {
+    let build_layout = dir.file_name().is_some_and(|n| n == "out") && dir.ancestors().nth(3).and_then(Path::file_name).is_some_and(|n| n == "build");
+    dir.parent().into_iter().chain(build_layout.then(|| dir.ancestors().nth(4)).flatten())
 }
 
 /// `path` without the `\\?\` prefix `canonicalize` adds on Windows, so clients that can't start
@@ -465,6 +471,20 @@ mod tests {
         if canon.to_str().and_then(plain_form).is_some() {
             assert!(!p.to_string_lossy().starts_with(r"\\?\"), "{p:?}");
         }
+    }
+
+    /// A test binary finds the CLI Cargo built in target/<profile>, in both of Cargo's layouts:
+    /// the FreeBSD job's Rust 1.100 ran tests from build/<package>/<hash>/out and found none.
+    #[test]
+    fn test_binaries_look_for_the_cli_in_the_profile_dir_in_either_cargo_layout() {
+        let t = Path::new("/t/debug");
+        let dirs = |dir: &str| cargo_profile_dirs(Path::new(dir)).map(Path::to_path_buf).collect::<Vec<_>>();
+        assert_eq!(dirs("/t/debug/deps"), [t]);
+        assert_eq!(dirs("/t/debug/build/craft-anything-ai/29bb85031a103de8/out"), [Path::new("/t/debug/build/craft-anything-ai/29bb85031a103de8"), t]);
+        // Anywhere else only the parent folder, as before: an installed app never looks further up.
+        assert_eq!(dirs("/usr/local/lib/out"), [Path::new("/usr/local/lib")]);
+        assert_eq!(dirs("/opt/app/bin"), [Path::new("/opt/app")]);
+        assert!(dirs("/").is_empty());
     }
 
     #[test]
