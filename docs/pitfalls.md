@@ -209,6 +209,11 @@ build caches are for concurrent work; reuse the current checkout's cache for seq
 runner missed the app (or a name fallback found another app). Search only the launched process
 and its descendants, and read the UI tree from the same PID that supplied the picture.
 
+**`ps -o pid=,ppid=` gave no parents on FreeBSD.** Its `ps` reads everything after a keyword's `=`
+as that column's header, commas included, so it printed PIDs alone and the runner's children were
+never found; Linux splits the list. Give each column its own `-o` (`-o pid= -o ppid=`), and check
+a new `ps` or other system command's flags against the BSD and macOS man pages, not just Linux.
+
 **Runtime capture passed relative paths to a tool that needs absolute ones.** With a relative
 project placement, the selected virtualenv interpreter and artifact paths stayed relative;
 PATH lookup can return a relative path too. Resolve workspace paths against the process's
