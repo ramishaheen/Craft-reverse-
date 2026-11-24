@@ -8,6 +8,11 @@ use std::time::Duration;
 
 const MAX_PROCESSES: usize = 32_768;
 
+/// One `-o` per column: FreeBSD's `ps` reads everything after a keyword's `=` as its header, so
+/// `-o pid=,ppid=` prints only PIDs (headed ",ppid=") there, and no process has a parent.
+#[cfg(not(windows))]
+const PS_ARGS: [&str; 5] = ["-A", "-o", "pid=", "-o", "ppid="];
+
 /// Read only numeric process relationships, with bounded output and a deadline.
 pub(super) fn snapshot(cancel: &crate::tool::CancelToken) -> Result<String, ToolError> {
     #[cfg(windows)]
@@ -21,7 +26,7 @@ pub(super) fn snapshot(cancel: &crate::tool::CancelToken) -> Result<String, Tool
         ])
     };
     #[cfg(not(windows))]
-    let command = Process::new("/bin/ps").args(["-A", "-o", "pid=,ppid="]);
+    let command = Process::new("/bin/ps").args(PS_ARGS);
     let cancel = cancel.clone();
     let out = command
         .timeout(Duration::from_secs(10))
@@ -187,6 +192,14 @@ mod tests {
         .unwrap_err();
         assert_eq!(error.code, ErrorCode::ProgramFailed);
         assert_eq!(attempts, 1, "oversized process families must not trigger repeated window scans");
+    }
+
+    /// Linux's `ps` splits `pid=,ppid=` into two columns; FreeBSD's makes ",ppid=" the PID header.
+    #[cfg(not(windows))]
+    #[test]
+    fn each_ps_column_is_its_own_option_so_bsd_keeps_the_parent() {
+        let columns: Vec<_> = PS_ARGS.windows(2).filter(|pair| pair[0] == "-o").map(|pair| pair[1]).collect();
+        assert_eq!(columns, ["pid=", "ppid="]);
     }
 
     /// Exercise the OS snapshot without opening any windows or requiring a language toolchain.
