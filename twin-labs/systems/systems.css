@@ -186,7 +186,8 @@ details.guided[open] summary::before { transform: rotate(90deg); }
 .quiz-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .quiz-score { font-weight: 600; }
 .topic-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
-.topic-nav .btn { flex-direction: column; align-items: flex-start; gap: 0; min-height: 56px; padding: 8px 16px; }
+.topic-nav .btn { flex-direction: column; align-items: flex-start; gap: 0; min-height: 56px; padding: 8px 16px; min-width: 0; max-width: 48%; white-space: normal; text-align: left; }
+.topic-nav .btn:last-child { text-align: right; }
 .topic-nav .btn:last-child { align-items: flex-end; }
 .footnote { margin-top: 20px; color: var(--text-3); font-size: 12.5px; }
 .error-box { padding: 20px; border: 1px solid var(--red); border-radius: var(--r-md); background: var(--surface); margin: 20px 0; }
