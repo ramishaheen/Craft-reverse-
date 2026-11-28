@@ -1,4 +1,4 @@
-// Twin Labs shell: theme, routing and the lab chooser.
+// Dr. Rami Shaheen Labs shell: theme, routing and the lab chooser.
 // Routes:  #/            home with the two lab buttons
 //          #/rover...    Rover Lab   (rover/index.js)
 //          #/systems...  Systems Lab (systems/index.js)
@@ -19,7 +19,7 @@ function applyTheme(choice) {
   for (const b of $$('#theme-seg button')) b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice));
   window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: t } }));
 }
-let themeChoice = store.get('theme', 'dark');
+let themeChoice = store.get('theme', 'light');
 applyTheme(themeChoice);
 $('#theme-seg').addEventListener('click', e => {
   const b = e.target.closest('button[data-theme-choice]');
@@ -62,9 +62,8 @@ async function route() {
   main.replaceChildren();
 
   if (!LABS[lab]) {
-    renderHome();
-    current = { lab: '', view: null };
-    document.title = 'Twin Labs — Rover Lab & Systems Lab';
+    current = { lab: '', view: renderHome() };
+    document.title = 'Labs — Dr. Rami Shaheen | Rover Lab & Systems Lab';
     return;
   }
   main.append(h('div.loading', h('div.spinner', { 'aria-label': 'Loading' })));
@@ -98,10 +97,13 @@ function renderHome() {
       h('ul', points.map(p => h('li', p))),
       h(`span.btn.lg.go.${cls}`, `Open ${title} →`));
 
-  main.append(h('section.home',
+  const rain = h('canvas.rain', { 'aria-hidden': 'true' });
+  main.append(rain, h('section.home',
     h('div.home-hero',
+      h('div.eyebrow', '> open lab --hands-on'),
       h('h1', 'Two labs. ', h('span.grad', 'Build it, then break it.')),
-      h('p', 'Assemble a robot car part by part in 3D and drive it, or push traffic through live models of the systems behind big websites and watch what fails.')),
+      h('p', 'Assemble a robot car part by part in 3D and drive it, or push traffic through live models of the systems behind big websites and watch what fails.'),
+      h('p.home-by', 'By ', h('a', { href: 'https://ramishaheen.cloud/', rel: 'noopener' }, 'Dr. Rami Shaheen'), ' · AI solutions for executives & VIPs')),
     h('div.lab-cards',
       card('rover', 'Rover Lab', 'Hardware · Build & drive',
         'Build a four-wheel robot car with an Arduino UNO or an ESP32, one step at a time in 3D, then drive it in the simulator.',
@@ -111,7 +113,55 @@ function renderHome() {
         '56 live simulations of caching, load balancing, queues, payments and famous system designs, with numbers that react.',
         ['Push traffic, crash servers, flush caches', 'Guided predict–run–explain experiments', '168 quiz questions with explanations', 'Learning paths and a build-your-own-system canvas'],
         SYSTEMS_ART, 'primary')),
-    h('p.home-foot', 'Everything runs in your browser. Simulated numbers are simplified models chosen to make behaviour visible.')));
+    h('p.home-foot', 'Everything runs in your browser. Simulated numbers are simplified models chosen to make behaviour visible. ',
+      h('a', { href: 'https://ramishaheen.cloud/', rel: 'noopener' }, 'ramishaheen.cloud'))));
+  return binaryRain(rain);
+}
+
+// Falling columns of 0s and 1s behind the home page (stops for reduced motion and on leave).
+function binaryRain(cv) {
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CW = 16, LH = 12;
+  let cols = [], raf = 0, last = 0, w = 0, hgt = 0;
+  const hues = () => {
+    const css = getComputedStyle(document.documentElement);
+    return ['--accent-2', '--green', '--violet', '--text-3'].map(v => css.getPropertyValue(v).trim());
+  };
+  let pal = hues();
+  const col = i => ({ x: i * CW + 3, y: Math.random() * hgt, len: 6 + Math.floor(Math.random() * 20), v: 18 + Math.random() * 40, c: pal[i % pal.length], on: Math.random() < 0.45 });
+  function size() {
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    w = cv.clientWidth; hgt = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(hgt * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Array.from({ length: Math.ceil(w / CW) }, (_, i) => col(i));
+  }
+  function frame(t) {
+    raf = still ? 0 : requestAnimationFrame(frame);
+    const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+    ctx.clearRect(0, 0, w, hgt);
+    ctx.font = '600 10px "Geist Mono", ui-monospace, monospace';
+    for (const c of cols) {
+      if (!c.on) continue;
+      c.y += c.v * dt;
+      if (c.y - c.len * LH > hgt) { Object.assign(c, col(Math.round((c.x - 3) / CW)), { y: -20 }); }
+      for (let k = 0; k < c.len; k++) {
+        const y = c.y - k * LH;
+        if (y < -LH || y > hgt) continue;
+        ctx.globalAlpha = 0.5 * (1 - k / c.len);
+        ctx.fillStyle = c.c;
+        ctx.fillText(((c.x * 7 + k * 13 + Math.floor(c.y / LH)) % 3) ? '0' : '1', c.x, y);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  const onTheme = () => { pal = hues(); cols.forEach((c, i) => (c.c = pal[i % pal.length])); };
+  size();
+  window.addEventListener('resize', size);
+  window.addEventListener('themechange', onTheme);
+  raf = requestAnimationFrame(frame);
+  return { destroy() { cancelAnimationFrame(raf); window.removeEventListener('resize', size); window.removeEventListener('themechange', onTheme); } };
 }
 
 const ROVER_ART = `<svg viewBox="0 0 400 190" aria-hidden="true">
@@ -119,7 +169,7 @@ const ROVER_ART = `<svg viewBox="0 0 400 190" aria-hidden="true">
   <rect width="400" height="190" fill="url(#hg)"/>
   <rect x="95" y="78" width="210" height="48" rx="10" fill="var(--surface-3)" stroke="var(--line-2)" stroke-width="2"/>
   <rect x="110" y="62" width="180" height="18" rx="6" fill="none" stroke="var(--teal)" stroke-width="2" opacity=".8"/>
-  <rect x="150" y="84" width="70" height="30" rx="4" fill="var(--accent)" opacity=".85"/>
+  <rect x="150" y="84" width="70" height="30" rx="4" fill="var(--accent-2)" opacity=".85"/>
   <rect x="232" y="86" width="40" height="26" rx="3" fill="var(--red)" opacity=".8"/>
   <rect x="180" y="40" width="44" height="18" rx="4" fill="var(--surface-2)" stroke="var(--text-3)" stroke-width="2"/>
   <circle cx="192" cy="49" r="6" fill="none" stroke="var(--text-2)" stroke-width="2"/><circle cx="212" cy="49" r="6" fill="none" stroke="var(--text-2)" stroke-width="2"/>

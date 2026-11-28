@@ -27,7 +27,7 @@ export function mount(el, rest, ctx) {
     root.replaceChildren();
     window.scrollTo(0, 0);
     const slug = rest[0];
-    if (!slug) { view = renderHome(root); document.title = 'Systems Lab — Twin Labs'; return; }
+    if (!slug) { view = renderHome(root); document.title = 'Systems Lab — Dr. Rami Shaheen Labs'; return; }
     if (slug === 'workbench') {
       document.title = 'Build your own system — Systems Lab';
       root.append(h('div.loading', h('div.spinner')));

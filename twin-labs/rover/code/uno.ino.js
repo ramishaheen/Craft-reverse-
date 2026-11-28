@@ -1,6 +1,6 @@
 // Arduino UNO sketches for the Rover Lab car. Plain strings so the page can show, copy and download them.
 
-export const UNO_TEST = `// Twin Labs rover - wiring test (Arduino UNO + Sensor Shield V5)
+export const UNO_TEST = `// RamiLabs rover - wiring test (Arduino UNO + Sensor Shield V5)
 //
 // Lift the car so the wheels turn freely, switch the battery on
 // and open the Serial Monitor at 115200 baud. Opening the monitor
@@ -56,7 +56,7 @@ void setup() {
   for (uint8_t pin : outputs) pinMode(pin, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
   Serial.begin(115200);
-  Serial.println(F("Twin Labs rover - wiring test"));
+  Serial.println(F("RamiLabs rover - wiring test"));
 
   Serial.println(F("1  LED on and one beep"));
   digitalWrite(LED_PIN, HIGH);
@@ -89,7 +89,7 @@ void loop() {
 }
 `;
 
-export const UNO_AVOIDER = `// Twin Labs rover - obstacle avoider (Arduino UNO + Sensor Shield V5)
+export const UNO_AVOIDER = `// RamiLabs rover - obstacle avoider (Arduino UNO + Sensor Shield V5)
 //
 // Drives forwards. When something is near it stops, beeps, looks
 // right and left with the sensor head and turns towards the side
@@ -185,7 +185,7 @@ void setup() {
   head.attach(SERVO_PIN);
   head.write(90);                 // look straight ahead
   Serial.begin(115200);
-  Serial.println(F("Twin Labs rover - obstacle avoider"));
+  Serial.println(F("RamiLabs rover - obstacle avoider"));
   delay(2000);                    // time to set the car down
   lastMoved = millis();
 }

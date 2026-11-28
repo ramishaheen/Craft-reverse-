@@ -1,6 +1,6 @@
 // ESP32 sketches for the Rover Lab car (arduino-esp32 core 3.x).
 
-export const ESP32_TEST = `// Twin Labs rover - wiring test (ESP32 DevKit V1 + expansion board)
+export const ESP32_TEST = `// RamiLabs rover - wiring test (ESP32 DevKit V1 + expansion board)
 // Board package: "esp32" by Espressif Systems, version 3.x
 //
 // Lift the car so the wheels turn freely, switch the battery on
@@ -57,7 +57,7 @@ void setup() {
   pinMode(ECHO_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
-  Serial.println("Twin Labs rover - wiring test");
+  Serial.println("RamiLabs rover - wiring test");
 
   Serial.println("1  LED on and one beep");
   digitalWrite(LED_PIN, HIGH);
@@ -89,7 +89,7 @@ void loop() {
 }
 `;
 
-export const ESP32_WIFI = `// Twin Labs rover - Wi-Fi firmware (ESP32 DevKit V1 + expansion board)
+export const ESP32_WIFI = `// RamiLabs rover - Wi-Fi firmware (ESP32 DevKit V1 + expansion board)
 //
 // The ESP32 opens its own Wi-Fi network. The Rover Lab connects to
 // ws://192.168.4.1:81/ and sends small JSON commands; the car sends
@@ -120,7 +120,7 @@ const unsigned long REPEAT_MS  = 2500;
 const unsigned long LINK_MS    = 700;   // no drive command: stop
 const unsigned long REPORT_MS  = 100;   // telemetry period
 
-const char *AP_NAME = "TwinLabs-Rover";
+const char *AP_NAME = "RamiLabs-Rover";
 const char *AP_PASS = "rover1234";      // at least 8 characters
 
 WebSocketsServer socket(81);

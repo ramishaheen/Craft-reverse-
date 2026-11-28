@@ -209,7 +209,7 @@ export const STEPS = [
         { text: 'In the Arduino IDE open File → Preferences and add https://espressif.github.io/arduino-esp32/package_esp32_index.json to “Additional boards manager URLs”. Install “esp32 by Espressif Systems” 3.x in the Boards Manager and select ESP32 Dev Module.' },
         { text: 'In the Library Manager install “WebSockets” by Markus Sattler and “ArduinoJson” (version 7) by Benoit Blanchon.' },
         { text: 'Lift the car so no wheel touches the table, upload the wiring test and open the Serial Monitor at 115200 baud. Check each numbered line, and fix anything that did not match using the list below.' },
-        { text: 'Upload the Wi-Fi firmware and switch the battery on. Join the “TwinLabs-Rover” network (password rover1234), go to step 10 and choose Settings → Real car (ESP32 Wi-Fi). Try the LED, buzzer and servo, then W A S D; finally put the car down, try Auto, and adjust TURN_MS until each turn is about a quarter turn.' },
+        { text: 'Upload the Wi-Fi firmware and switch the battery on. Join the “RamiLabs-Rover” network (password rover1234), go to step 10 and choose Settings → Real car (ESP32 Wi-Fi). Try the LED, buzzer and servo, then W A S D; finally put the car down, try Auto, and adjust TURN_MS until each turn is about a quarter turn.' },
       ],
     },
     sketches: {
@@ -252,7 +252,7 @@ export const STEPS = [
       ],
       esp32: [
         ['Upload hangs at “Connecting…”', 'Hold the DevKit’s BOOT button until the upload starts, and use a USB cable that carries data, not just power.'],
-        ['The lab will not connect to the car', 'Your computer must be on the “TwinLabs-Rover” network, and this page must be opened over http://, not https:// — browsers block ws:// connections from secure pages. Serve the twin-labs folder from your own computer (for example python3 -m http.server) and open it at http://localhost.'],
+        ['The lab will not connect to the car', 'Your computer must be on the “RamiLabs-Rover” network, and this page must be opened over http://, not https:// — browsers block ws:// connections from secure pages. Serve the twin-labs folder from your own computer (for example python3 -m http.server) and open it at http://localhost.'],
         ['One side spins backwards', 'Swap that side’s two wires in its screw terminal. MOTOR-A is the left side, MOTOR-B the right.'],
         ['One wheel turns against its partner', 'Swap that single motor’s two leads where they are twisted to the other motor’s.'],
         ['Left and right are swapped', 'The jumper pairs are crossed: A-IA / A-IB belong on GPIO 26 / 27 and B-IA / B-IB on GPIO 33 / 25.'],

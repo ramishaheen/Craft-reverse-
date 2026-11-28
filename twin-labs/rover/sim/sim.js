@@ -173,8 +173,8 @@ export class RoverSim {
   later(key, text, delay = 0.35) { this.pending.set(key, { text, at: this.t + delay }); }
 
   boot() {
-    this.log('Twin Labs rover · simulated');
-    if (this.board === 'esp32') { this.log('ESP32-WROOM-32 · 240 MHz'); this.log('Wi-Fi access point "TwinLabs-Rover" · ws://192.168.4.1:81/'); }
+    this.log('RamiLabs rover · simulated');
+    if (this.board === 'esp32') { this.log('ESP32-WROOM-32 · 240 MHz'); this.log('Wi-Fi access point "RamiLabs-Rover" · ws://192.168.4.1:81/'); }
     else { this.log('Arduino UNO · ATmega328P · 16 MHz'); this.log('Serial monitor · 115200 baud'); }
     this.log('HC-SR04 ok · servo at 90° · L9110S ok');
     this.log(`Distance: ${this.distance.toFixed(1)} cm`);

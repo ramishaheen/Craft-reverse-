@@ -1,0 +1,46 @@
+# lab.ramishaheen.cloud — static site settings for Apache (Hostinger)
+
+Options -Indexes
+DirectoryIndex index.html
+
+# Always use HTTPS
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Correct types for ES modules, fonts and data
+<IfModule mod_mime.c>
+  AddType text/javascript .js .mjs
+  AddType font/woff2 .woff2
+  AddType application/json .json
+  AddType image/svg+xml .svg
+  AddCharset utf-8 .js .css .html .json
+</IfModule>
+
+# Compress text
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache: the page itself is always revalidated; code, fonts and images are cached for a day
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|json)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|png|jpe?g|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Never serve dotfiles other than this one
+<FilesMatch "^\.(?!htaccess$)">
+  Require all denied
+</FilesMatch>

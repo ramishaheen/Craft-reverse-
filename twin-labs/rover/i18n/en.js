@@ -67,7 +67,7 @@ export default {
 
   'set.title': 'Settings', 'set.conn': 'The drive step controls', 'set.sim': 'Simulator', 'set.real': 'Real car (ESP32 Wi-Fi)', 'set.address': 'Car address',
   'set.simHint': 'The simulated car runs in your browser.',
-  'set.wsHint': 'Join the car’s “TwinLabs-Rover” Wi-Fi network first; the ESP32 firmware from step 9 listens on ws://192.168.4.1:81/.',
+  'set.wsHint': 'Join the car’s “RamiLabs-Rover” Wi-Fi network first; the ESP32 firmware from step 9 listens on ws://192.168.4.1:81/.',
   'set.httpsWarn': 'This page is served over https, and browsers block ws:// from secure pages: open a local copy over http:// to reach the car.',
   'set.status': 'Status: {status}.', 'set.display': 'Display and sound', 'set.sound': 'Play the buzzer through the speakers', 'set.beam': 'Show the ultrasonic beam',
   'set.follow': 'Camera follows the car', 'set.labels': 'Labels on the parts mat', 'set.animate': 'Animate each build step',
