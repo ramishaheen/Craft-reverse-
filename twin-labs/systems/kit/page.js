@@ -120,7 +120,7 @@ export function mountTopicPage(host, topic, sim) {
     },
     clearLog() { events = []; logList.replaceChildren(h('li.empty', sim.emptyLog || 'Nothing yet. Change a control or press a button.')); },
     /** fn(dt) each frame with simulated seconds (0 while paused). */
-    loop(fn) { const off = addTicker((dt, real) => { simTime += dt; fn(dt, real); }); cleanups.push(off); return off; },
+    loop(fn) { const off = addTicker((dt, real) => fn(dt, real)); cleanups.push(off); return off; },
     /** Call fn every `sec` simulated seconds. */
     every(sec, fn) { const t = { sec, acc: 0, fn }; timers.push(t); return () => timers.splice(timers.indexOf(t), 1); },
     resetTime() { simTime = 0; for (const t of timers) t.acc = 0; },
@@ -144,8 +144,10 @@ export function mountTopicPage(host, topic, sim) {
     else drag = null;
   });
 
-  // timers driven by the same clock
+  // The page's own ticker is registered before the sim's, so it advances simulated time exactly
+  // once per frame (before any sim loop runs) and fires the fixed-step timers.
   kit.loop(dt => {
+    simTime += dt;
     for (const t of timers) {
       t.acc += dt;
       let guard = 0;
