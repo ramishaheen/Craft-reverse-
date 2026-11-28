@@ -12,7 +12,7 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f8f8f6">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -2 52 52'%3E%3Crect x='-4' y='-2' width='52' height='52' rx='12' fill='%230b0b0b'/%3E%3Cg fill='none' stroke='%23f2f2f2' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6V42M8 6H26L34 13V21L26 27H8M20 27L36 42'/%3E%3Cpath d='M8 16L26 6M8 16L26 27M20 27L8 42M8 34L20 27' opacity='.55'/%3E%3C/g%3E%3Ccircle cx='20' cy='16.5' r='3.2' fill='%233fe0ff'/%3E%3C/svg%3E">
-  <script>
+  <script data-cfasync="false">
     // Apply the saved theme before first paint (light by default, like ramishaheen.cloud).
     (function () {
       var t = 'light';
@@ -21,7 +21,7 @@
       document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
     })();
   </script>
-  <script type="importmap">
+  <script type="importmap" data-cfasync="false">
     {
       "imports": {
         "three": "./vendor/three/three.module.js",
@@ -30,7 +30,7 @@
     }
   </script>
   <link rel="stylesheet" href="./css/theme.css">
-  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/app.js" data-cfasync="false"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>

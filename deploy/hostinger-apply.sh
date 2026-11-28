@@ -9,7 +9,7 @@
 # (validated with nginx -t before every reload, rolled back on failure), certificate via the existing certbot setup.
 set -eu
 
-SRC_SHA=31888b116cefb32983bbe2d711701cad9f90f74f
+SRC_SHA="${1:-31888b116cefb32983bbe2d711701cad9f90f74f}"   # labs source commit; the first argument overrides it
 HOST=lab.ramishaheen.cloud
 NGINX=ohmycompany-nginx-1
 STAMP=$(date -u +%Y%m%d%H%M%S)
